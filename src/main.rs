@@ -4,11 +4,11 @@ fn main() {
     let user_word_list = vec!["news", "paper", "elephant", "music"];
     let superset_attacker_word_list = vec!["news", "paper", "elephant", "music", "newspaper"];
     println!(
-        "Using user's exact word list and guessing randomly: Over 1M cracks, mean number of guesses was {:?}",
+        "Using user's exact word list and guessing randomly: Over 1M cracks, mean number of guesses was {:.4}",
         random_guessing_attack(&user_word_list, &user_word_list)
     );
     println!(
-        "Using a super-set word list and guessing randomly: Over 1M cracks, mean number of guesses was {:?}",
+        "Using a super-set word list and guessing randomly: Over 1M cracks, mean number of guesses was {:.4}",
         random_guessing_attack(&user_word_list, &superset_attacker_word_list)
     );
     println!("---------------------------------");
