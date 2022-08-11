@@ -10,15 +10,21 @@ Then it compares the efficiency of of a few different attack procedures with a k
 
 ## Preliminary results/output
 
+### Attaker guessing randomly
 * Using user's exact word list and guessing randomly: Over 1M cracks, mean number of guesses was 63.945233
 * Using a super-set word list and guessing randomly: Over 1M cracks, mean number of guesses was 125.058919
 
+### Attacker brute-forcing through three-word guesses
 * Using user's word list and a three-word brute-force procedure: Over 1M cracks, mean number of guesses was 32.4776
 * Using a super-set word list and a three-word brute-force procedure: Over 1M cracks, mean number of guesses was 47.4764
 
+### Attacker brute-forcing through two-word guesses then three-word guesses
 * Using user's word list and a two-word-then-three-word brute-force procedure: Over 1M cracks, mean number of guesses was 48.5008. 12.4959% of cracks took fewer than 25 guesses.
 * Using a super-set word list and a two-word-then-three-word brute-force procedure: Over 1M cracks, mean number of guesses was 68.6457. 12.4704% of cracks took fewer than 25 guesses.
 
+### Attacker against a user who got "unlucky" choosing his passphrase
+* Using user's word list and a two-word-then-three-word brute-force procedure against a very unlucky user: Over 1M cracks, mean number of guesses was 32.2529. 62.4972% of cracks took fewer than 25 guesses.
+* Using a super-set word list and a two-word-then-three-word brute-force procedure against a very unlucky user: Over 1M cracks, mean number of guesses was 17.5060. 100.0000% of cracks took fewer than 25 guesses.
 
 ## Running it yourself
 
