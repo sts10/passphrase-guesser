@@ -4,13 +4,13 @@ fn main() {
     let user_word_list = vec!["news", "paper", "elephant", "music"];
     let attacker_word_list = vec!["news", "paper", "elephant", "music"];
     println!(
-        "Using exact word list: Over 1M cracks, mean number of guesses was {:?}",
+        "Using user's exact word list: Over 1M cracks, mean number of guesses was {:?}",
         get_mean_number_of_guesses(&user_word_list, &attacker_word_list)
     );
-    let attacker_word_list = vec!["news", "paper", "elephant", "music", "newspaper"];
+    let superset_attacker_word_list = vec!["news", "paper", "elephant", "music", "newspaper"];
     println!(
-        "Using plus-one word list: Over 1M cracks, mean number of guesses was {:?}",
-        get_mean_number_of_guesses(&user_word_list, &attacker_word_list)
+        "Using a super-set word list: Over 1M cracks, mean number of guesses was {:?}",
+        get_mean_number_of_guesses(&user_word_list, &superset_attacker_word_list)
     );
 }
 
