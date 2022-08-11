@@ -2,32 +2,36 @@ use rand::seq::SliceRandom;
 
 fn main() {
     let user_word_list = vec!["news", "paper", "elephant", "music"];
+    let superset_attacker_word_list = vec!["news", "paper", "elephant", "music", "newspaper"];
     println!(
         "Using user's exact word list and guessing randomly: Over 1M cracks, mean number of guesses was {:?}",
         random_guessing_attack(&user_word_list, &user_word_list)
     );
-    let superset_attacker_word_list = vec!["news", "paper", "elephant", "music", "newspaper"];
     println!(
         "Using a super-set word list and guessing randomly: Over 1M cracks, mean number of guesses was {:?}",
         random_guessing_attack(&user_word_list, &superset_attacker_word_list)
     );
     println!("---------------------------------");
     println!(
-        "Using user's word list and a three-word brute-force procedure: Over 1M cracks, mean number of guesses was {:?}",
+        "Using user's word list and a three-word brute-force procedure: Over 1M cracks, mean number of guesses was {:.4}",
         three_word_brute_force_attack(&user_word_list, &user_word_list)
     );
     println!(
-        "Using a super-set word list and a three-word brute-force procedure: Over 1M cracks, mean number of guesses was {:?}",
+        "Using a super-set word list and a three-word brute-force procedure: Over 1M cracks, mean number of guesses was {:.4}",
         three_word_brute_force_attack(&user_word_list, &superset_attacker_word_list)
     );
     println!("---------------------------------");
+    let (mean_number_of_guesses, percentage_of_cracks_early) =
+        gradual_word_brute_force_attack(&user_word_list, &user_word_list);
     println!(
-        "Using user's word list and a two-word-then-three-word brute-force procedure: Over 1M cracks, mean number of guesses was {:?}",
-        gradual_word_brute_force_attack(&user_word_list, &user_word_list)
+        "Using user's word list and a two-word-then-three-word brute-force procedure: Over 1M cracks, mean number of guesses was {:.4}. {:.4}% of cracks took fewer than 25 guesses.",
+        mean_number_of_guesses, percentage_of_cracks_early
     );
+    let (mean_number_of_guesses, percentage_of_cracks_early) =
+        gradual_word_brute_force_attack(&user_word_list, &superset_attacker_word_list);
     println!(
-        "Using a super-set word list and a two-word-then-three-word brute-force procedure: Over 1M cracks, mean number of guesses was {:?}",
-        gradual_word_brute_force_attack(&user_word_list, &superset_attacker_word_list)
+        "Using a super-set word list and a two-word-then-three-word brute-force procedure: Over 1M cracks, mean number of guesses was {:.4}. {:.4}% of cracks took fewer than 25 guesses.",
+        mean_number_of_guesses, percentage_of_cracks_early
     );
 }
 
@@ -73,7 +77,10 @@ fn three_word_brute_force_attack(user_word_list: &[&str], attacker_word_list: &[
     mean_number_of_guesses(number_of_guesses_required)
 }
 
-fn gradual_word_brute_force_attack(user_word_list: &[&str], attacker_word_list: &[&str]) -> f64 {
+fn gradual_word_brute_force_attack(
+    user_word_list: &[&str],
+    attacker_word_list: &[&str],
+) -> (f64, f64) {
     let mut number_of_guesses_required = vec![];
     for _p in 0..1000000 {
         let user_password = make_a_password(user_word_list);
@@ -107,7 +114,20 @@ fn gradual_word_brute_force_attack(user_word_list: &[&str], attacker_word_list: 
         // println!("Cracked! Took {:?} guesses this time.", number_of_guesses);
         number_of_guesses_required.push(number_of_guesses);
     }
-    mean_number_of_guesses(number_of_guesses_required)
+    let mut number_of_early_cracks = 0;
+    for guesses in &number_of_guesses_required {
+        // For now, we're going to arbritarily define an "early" crack as < 25 guesses
+        if guesses < &25 {
+            number_of_early_cracks += 1;
+        }
+    }
+    let percentage_of_cracks_the_were_early: f64 =
+        number_of_early_cracks as f64 / 1000000.0 * 100.0;
+
+    (
+        mean_number_of_guesses(number_of_guesses_required),
+        percentage_of_cracks_the_were_early,
+    )
 }
 
 fn make_a_password(list: &[&str]) -> String {
