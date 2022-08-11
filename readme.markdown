@@ -8,8 +8,6 @@ It creates 1 million 3-word passphrases from a short word list of 4 words: "news
 
 Then it compares the efficiency of of a few different attack procedures with a key difference: In half the attacks, the adversary uses the user's exact word list, and in the other half of attacks, the adversary uses a super-set word list of the user's word list ("news", "paper", "elephant", "music" and "newspaper"). 
 
-
-
 ## Preliminary results/output
 
 * Using user's exact word list and guessing randomly: Over 1M cracks, mean number of guesses was 63.945233
@@ -21,3 +19,7 @@ Then it compares the efficiency of of a few different attack procedures with a k
 * Using user's word list and a two-word-then-three-word brute-force procedure: Over 1M cracks, mean number of guesses was 48.5008. 12.4959% of cracks took fewer than 25 guesses.
 * Using a super-set word list and a two-word-then-three-word brute-force procedure: Over 1M cracks, mean number of guesses was 68.6457. 12.4704% of cracks took fewer than 25 guesses.
 
+
+## Running it yourself
+
+Recommend you use `cargo run --release` to speed things up.
