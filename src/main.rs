@@ -2,19 +2,27 @@ use rand::seq::SliceRandom;
 
 fn main() {
     let user_word_list = vec!["news", "paper", "elephant", "music"];
-    let attacker_word_list = vec!["news", "paper", "elephant", "music"];
     println!(
-        "Using user's exact word list: Over 1M cracks, mean number of guesses was {:?}",
-        get_mean_number_of_guesses(&user_word_list, &attacker_word_list)
+        "Using user's exact word list and guessing randomly: Over 1M cracks, mean number of guesses was {:?}",
+        random_guessing_attack(&user_word_list, &user_word_list)
     );
     let superset_attacker_word_list = vec!["news", "paper", "elephant", "music", "newspaper"];
     println!(
-        "Using a super-set word list: Over 1M cracks, mean number of guesses was {:?}",
-        get_mean_number_of_guesses(&user_word_list, &superset_attacker_word_list)
+        "Using a super-set word list and guessing randomly: Over 1M cracks, mean number of guesses was {:?}",
+        random_guessing_attack(&user_word_list, &superset_attacker_word_list)
+    );
+    println!("---------------------------------");
+    println!(
+        "Using user's word list and more more traditional brute-force procedure: Over 1M cracks, mean number of guesses was {:?}",
+        brute_force_attack(&user_word_list, &user_word_list)
+    );
+    println!(
+        "Using a super-set word list and more traditional brute-force procedure: Over 1M cracks, mean number of guesses was {:?}",
+        brute_force_attack(&user_word_list, &superset_attacker_word_list)
     );
 }
 
-fn get_mean_number_of_guesses(user_word_list: &[&str], attacker_word_list: &[&str]) -> f64 {
+fn random_guessing_attack(user_word_list: &[&str], attacker_word_list: &[&str]) -> f64 {
     let mut number_of_guesses_required = vec![];
     for _p in 0..1000000 {
         let user_password = make_a_password(user_word_list);
@@ -23,6 +31,32 @@ fn get_mean_number_of_guesses(user_word_list: &[&str], attacker_word_list: &[&st
         while user_password != attacker_guess {
             attacker_guess = make_a_password(attacker_word_list);
             number_of_guesses += 1;
+        }
+        // println!("Cracked! Took {:?} guesses this time.", number_of_guesses);
+        number_of_guesses_required.push(number_of_guesses);
+    }
+    mean_number_of_guesses(number_of_guesses_required)
+}
+
+fn brute_force_attack(user_word_list: &[&str], attacker_word_list: &[&str]) -> f64 {
+    let mut number_of_guesses_required = vec![];
+    for _p in 0..1000000 {
+        let user_password = make_a_password(user_word_list);
+        let mut attacker_guess = "".to_string();
+        let mut number_of_guesses: usize = 0;
+        'outer: while user_password != attacker_guess {
+            for word1 in attacker_word_list {
+                for word2 in attacker_word_list {
+                    for word3 in attacker_word_list {
+                        attacker_guess =
+                            format!("{:?}{:?}{:?}", word1, word2, word3).replace("\"", "");
+                        number_of_guesses += 1;
+                        if attacker_guess == user_password {
+                            break 'outer;
+                        }
+                    }
+                }
+            }
         }
         // println!("Cracked! Took {:?} guesses this time.", number_of_guesses);
         number_of_guesses_required.push(number_of_guesses);
